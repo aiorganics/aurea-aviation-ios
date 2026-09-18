@@ -1,0 +1,37 @@
+name: Build Aurea Aviation iOS app
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build unsigned iOS app
+        run: |
+          xcodebuild \
+            -project AureaAviationApp.xcodeproj \
+            -target AureaAviationApp \
+            -configuration Release \
+            -sdk iphoneos \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            build
+
+      - name: Package unsigned IPA
+        run: |
+          rm -rf Payload AureaAviation-unsigned.ipa
+          mkdir Payload
+          cp -R build/Build/Products/Release-iphoneos/AureaAviationApp.app Payload/
+          zip -r AureaAviation-unsigned.ipa Payload
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: AureaAviation-unsigned-ipa
+          path: AureaAviation-unsigned.ipa
