@@ -15,7 +15,7 @@ jobs:
         run: |
           xcodebuild \
             -project AureaAviationApp.xcodeproj \
-            -target AureaAviationApp \
+            -scheme AureaAviationApp \
             -configuration Release \
             -sdk iphoneos \
             -derivedDataPath build \
